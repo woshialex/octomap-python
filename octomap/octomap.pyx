@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 from libcpp.string cimport string
 from libcpp cimport bool as cppbool
 from libc.string cimport memcpy
@@ -114,12 +116,12 @@ cdef class iterator_base:
         if self.thisptr:
             del self.thisptr
 
-    def __is_end(self):
+    def is_end(self):
         return deref(self.thisptr) == self.treeptr.end_tree()
 
     def __is_acceseable(self):
         if self.thisptr and self.treeptr:
-            if not self.__is_end():
+            if not self.is_end():
                 return True
         return False
 
@@ -210,7 +212,7 @@ cdef class tree_iterator(iterator_base):
 
     def next(self):
         if self.thisptr and self.treeptr:
-            if not self.__is_end():
+            if not self.is_end():
                 inc(deref(defs.static_cast[tree_iterator_ptr](self.thisptr)))
                 return self
             else:
@@ -220,7 +222,7 @@ cdef class tree_iterator(iterator_base):
 
     def __iter__(self):
         if self.thisptr and self.treeptr:
-            while not self.__is_end():
+            while not self.is_end():
                 yield self
                 if self.thisptr:
                     inc(deref(defs.static_cast[tree_iterator_ptr](self.thisptr)))
@@ -244,7 +246,7 @@ cdef class leaf_iterator(iterator_base):
 
     def next(self):
         if self.thisptr and self.treeptr:
-            if not self.__is_end():
+            if not self.is_end():
                 inc(deref(defs.static_cast[leaf_iterator_ptr](self.thisptr)))
                 return self
             else:
@@ -254,7 +256,7 @@ cdef class leaf_iterator(iterator_base):
 
     def __iter__(self):
         if self.thisptr and self.treeptr:
-            while not self.__is_end():
+            while not self.is_end():
                 yield self
                 if self.thisptr:
                     inc(deref(defs.static_cast[leaf_iterator_ptr](self.thisptr)))
@@ -272,7 +274,7 @@ cdef class leaf_bbx_iterator(iterator_base):
 
     def next(self):
         if self.thisptr and self.treeptr:
-            if not self.__is_end():
+            if not self.is_end():
                 inc(deref(defs.static_cast[leaf_bbx_iterator_ptr](self.thisptr)))
                 return self
             else:
@@ -282,7 +284,7 @@ cdef class leaf_bbx_iterator(iterator_base):
 
     def __iter__(self):
         if self.thisptr and self.treeptr:
-            while not self.__is_end():
+            while not self.is_end():
                 yield self
                 if self.thisptr:
                     inc(deref(defs.static_cast[leaf_bbx_iterator_ptr](self.thisptr)))
